@@ -37,7 +37,7 @@ struct Node {
 };
 
 static const std::string influx_url = "http://your.influxdb.host:8086";
-static const std::string inplux_db = "sensors";
+static const std::string influx_db = "sensors";
 
 // MAC address whitelist (+ additional hardcoded device information)
 // TODO: add your beacons 
@@ -57,7 +57,7 @@ static void send_to_influx(const Node& node, const SensorData& data, uint32_t lo
     CURL* curl = curl_easy_init();
     
     std::stringstream url;
-    url << influx_url << "/write?db=" << inplux_db;
+    url << influx_url << "/write?db=" << influx_db;
     
     std::stringstream record;
     record << node.name << " ";
