@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.5)
+project(nrf52_sht30_collector)
+find_package(CURL REQUIRED) 
+add_executable(nrf52_sht30_collector main.cpp)
+target_include_directories(nrf52_sht30_collector PRIVATE ${CURL_INCLUDE_DIR})
+target_link_libraries(nrf52_sht30_collector bluetooth ${CURL_LIBRARIES})
