@@ -89,20 +89,20 @@ int main(int argc, char** argv)
     int dev_id = hci_get_route(nullptr);
 
     int device = hci_open_dev(dev_id);
-	CHECK(device);    
-	CHECK(hci_le_set_scan_parameters(device, 0, htobs(0x0010), htobs(0x0010), 0, 0, 1000));
-	CHECK(hci_le_set_scan_enable(device, 1, 0, 1000));
+    CHECK(device);    
+    CHECK(hci_le_set_scan_parameters(device, 0, htobs(0x0010), htobs(0x0010), 0, 0, 1000));
+    CHECK(hci_le_set_scan_enable(device, 1, 0, 1000));
 
     struct hci_filter nf;
     hci_filter_clear(&nf);
-	hci_filter_set_ptype(HCI_EVENT_PKT, &nf);
-	hci_filter_set_event(EVT_LE_META_EVENT, &nf);
+    hci_filter_set_ptype(HCI_EVENT_PKT, &nf);
+    hci_filter_set_event(EVT_LE_META_EVENT, &nf);
 
     CHECK(setsockopt(device, SOL_HCI, HCI_FILTER, &nf, sizeof(nf)));
     
-	struct sigaction sa = {};
+    struct sigaction sa = {};
     sa.sa_flags = SA_NOCLDSTOP;
-	sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGINT, &sa, NULL);
 
     uint8_t buf[HCI_MAX_EVENT_SIZE];
     while(run) 
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
         {
             if (errno == EAGAIN || errno == EINTR)
             {
-				continue;
+                continue;
             }
 
             CHECK(len);
@@ -121,22 +121,22 @@ int main(int argc, char** argv)
         }
 
         uint8_t* ptr = buf + (1 + HCI_EVENT_HDR_SIZE);
-		len -= (1 + HCI_EVENT_HDR_SIZE);
+        len -= (1 + HCI_EVENT_HDR_SIZE);
 
-		evt_le_meta_event* meta = reinterpret_cast<evt_le_meta_event*>(ptr);
+        evt_le_meta_event* meta = reinterpret_cast<evt_le_meta_event*>(ptr);
 
-		if (meta->subevent != 0x02)
+        if (meta->subevent != 0x02)
         {
             std::cerr << "error: subevent " << static_cast<int>(meta->subevent);
             break;
         }
 
-		le_advertising_info* info = reinterpret_cast<le_advertising_info*>(meta->data + 1);
+        le_advertising_info* info = reinterpret_cast<le_advertising_info*>(meta->data + 1);
 
         
         char addr[19] = {};
         ba2str(&info->bdaddr, addr);
-		
+        
         auto it = whitelist.find(std::string(addr));
         if(it == whitelist.end())
         {
@@ -196,8 +196,8 @@ int main(int argc, char** argv)
         }
     }
 
-	CHECK(hci_le_set_scan_enable(device, 0, 0, 1000));
-	hci_close_dev(device);
+    CHECK(hci_le_set_scan_enable(device, 0, 0, 1000));
+    hci_close_dev(device);
     
     curl_global_cleanup();
     return 0;

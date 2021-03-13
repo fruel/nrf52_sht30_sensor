@@ -147,7 +147,7 @@ static void update_bettery_voltage()
     if (timeout != 0)
     {
         sensor_data.battery_voltage =  ((buffer[0] * 1000L)+(ADC12_COUNTS_PER_VOLT/2)) / ADC12_COUNTS_PER_VOLT;
-        sensor_data.battery_percentage = battery_level_in_percent(sensor_data.battery_voltage);  	
+        sensor_data.battery_percentage = battery_level_in_percent(sensor_data.battery_voltage);
     }
     else
     {
